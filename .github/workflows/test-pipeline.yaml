@@ -45,7 +45,7 @@ jobs:
       - run: echo "Deploy"
 
   deploy-production:
-    needs: test-ci
+    needs: unit-tests
     if: github.ref == 'refs/heads/master'
 
     runs-on: ubuntu-20.04
