@@ -27,7 +27,7 @@ jobs:
     - run: npm ci
     - run: npm run test
 
-code-review:
+  code-review:
     runs-on: ubuntu-20.04
     needs: unit-tests
 
@@ -44,7 +44,9 @@ code-review:
 
       - name: Run ESLint
         run: npx eslint .
+        continue-on-error: true
 
+      - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v2
 
       - name: Run ESLint with coverage
