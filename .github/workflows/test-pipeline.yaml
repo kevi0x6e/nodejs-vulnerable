@@ -7,6 +7,8 @@ on:
   pull_request:
     branches:
       - master
+    types: [closed]
+
 
 jobs:
 
@@ -68,7 +70,7 @@ jobs:
 
   deploy-production:
     needs: [unit-tests, code-review]
-    if: github.ref == 'refs/heads/master' && github.event_name == 'pull_request'
+    if: github.ref == 'refs/heads/master' && github.event.pull_request.merged == true
 
     runs-on: ubuntu-20.04
     concurrency: deploy-to-production
