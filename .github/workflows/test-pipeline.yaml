@@ -29,8 +29,8 @@ jobs:
 
   deploy-test:
     needs: unit-tests
-    if: github.ref == 'refs/heads/develop/**'
-
+    if: startsWith(github.ref, 'refs/heads/develop/')
+    
     runs-on: ubuntu-20.04
     concurrency: deploy-to-test
     environment: test
