@@ -9,7 +9,7 @@ module.exports = {
         "no-console": "warn",
         "space-before-blocks": "error",
         "keyword-spacing": "error",
-        "no-unused-vars": "warn",
+        "no-unused-vars": "error",
         "no-unexpected-multiline": "error",
         "no-unexpected-multiline": "error"
     },
