@@ -52,7 +52,7 @@ jobs:
   sca:
     runs-on: ubuntu-latest
     needs: unit-tests
-    
+
     steps:
       - uses: actions/checkout@master
       - name: Run Snyk to check for vulnerabilities
@@ -65,7 +65,8 @@ jobs:
           ref: master
 
   deploy-test:
-    needs: [unit-tests, code-review]
+    needs: sca
+
     if: startsWith(github.ref, 'refs/heads/develop/')
 
     runs-on: ubuntu-20.04
@@ -82,7 +83,8 @@ jobs:
       - run: echo "Deploy"
 
   deploy-production:
-    needs: [unit-tests, code-review]
+    needs: deploy-test
+    
     if: github.ref == 'refs/heads/master' && github.event.pull_request.merged == true
 
     runs-on: ubuntu-20.04
