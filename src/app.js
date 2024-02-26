@@ -1,12 +1,14 @@
 const express = require('express');
+const bodyParser = require('body-parser');
+
 const app = express();
 
-app.use(express.json());
+app.use(bodyParser.json());
 
 app.get('/', (req, res) => {
-  const {printHello} = require('./services/printHello');
+  const {printHelloToYou} = require('./services/printHello');
   
-  res.send(printHello());
+  res.send(printHelloToYou());
 });
 
 module.exports = {
