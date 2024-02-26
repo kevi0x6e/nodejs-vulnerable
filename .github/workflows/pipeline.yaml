@@ -9,7 +9,6 @@ on:
       - master
     types: [closed]
 
-
 jobs:
 
   unit-tests:
@@ -41,7 +40,6 @@ jobs:
 
       - name: Run ESLint
         run: npx eslint .
-        continue-on-error: true
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v2
