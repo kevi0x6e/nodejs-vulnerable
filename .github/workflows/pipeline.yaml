@@ -11,6 +11,18 @@ on:
 
 jobs:
 
+  unit-tests:
+    runs-on: ubuntu-20.04
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Use Node.js 18.x
+      uses: actions/setup-node@v2
+      with:
+        node-version: 18.x
+    - run: npm ci
+    - run: npm run test
+
   code-review:
     runs-on: ubuntu-20.04
     needs: unit-tests
@@ -37,18 +49,6 @@ jobs:
         run: npm run lint:coverage
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-          
-  unit-tests:
-    runs-on: ubuntu-20.04
-
-    steps:
-    - uses: actions/checkout@v2
-    - name: Use Node.js 18.x
-      uses: actions/setup-node@v2
-      with:
-        node-version: 18.x
-    - run: npm ci
-    - run: npm run test
 
   deploy-test:
     needs: [unit-tests, code-review]
