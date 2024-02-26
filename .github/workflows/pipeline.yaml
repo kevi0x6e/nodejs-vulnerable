@@ -7,25 +7,12 @@ on:
   pull_request:
     branches:
       - master
-    types: [closed]
+    types: [opened, synchronize, reopened, closed]
 
 jobs:
 
-  unit-tests:
-    runs-on: ubuntu-20.04
-
-    steps:
-    - uses: actions/checkout@v2
-    - name: Use Node.js 18.x
-      uses: actions/setup-node@v2
-      with:
-        node-version: 18.x
-    - run: npm ci
-    - run: npm run test
-
   code-review:
     runs-on: ubuntu-20.04
-    needs: unit-tests
 
     steps:
       - name: Checkout code
@@ -49,8 +36,37 @@ jobs:
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
+  unit-tests:
+    runs-on: ubuntu-20.04
+    needs: code-review
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Use Node.js 18.x
+      uses: actions/setup-node@v2
+      with:
+        node-version: 18.x
+    - run: npm ci
+    - run: npm run test
+
+  sca:
+    runs-on: ubuntu-latest
+    needs: unit-tests
+
+    steps:
+      - uses: actions/checkout@master
+      - name: Run Snyk to check for vulnerabilities
+        uses: snyk/actions/node@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          ref: master
+
   deploy-test:
-    needs: [unit-tests, code-review]
+    needs: sca
+
     if: startsWith(github.ref, 'refs/heads/develop/')
 
     runs-on: ubuntu-20.04
@@ -67,7 +83,8 @@ jobs:
       - run: echo "Deploy"
 
   deploy-production:
-    needs: [unit-tests, code-review]
+    needs: deploy-test
+    
     if: github.ref == 'refs/heads/master' && github.event.pull_request.merged == true
 
     runs-on: ubuntu-20.04
