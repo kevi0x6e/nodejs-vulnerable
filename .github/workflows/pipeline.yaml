@@ -7,7 +7,7 @@ on:
   pull_request:
     branches:
       - master
-    types: [opened, synchronize, reopened, closed]
+    types: [closed]
 
 jobs:
 
@@ -64,8 +64,33 @@ jobs:
         with:
           ref: master
 
-  deploy-test:
+  sast:
+    runs-on: ubuntu-latest
     needs: sca
+    
+    container:
+      image: returntocorp/semgrep
+    steps:
+      - name: clone application source code
+        uses: actions/checkout@v3
+      - name: full scan
+        run: |
+          semgrep \
+            --sarif --output report.sarif \
+            --metrics=off \
+            --config="p/default" 
+      - name: save report as pipeline artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: report.sarif
+          path: report.sarif     
+      - name: Download report
+        uses: actions/download-artifact@v2
+        with: 
+          name: report.sarif
+
+  deploy-test:
+    needs: sast
 
     if: startsWith(github.ref, 'refs/heads/develop/')
 
