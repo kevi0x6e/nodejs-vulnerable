@@ -90,7 +90,7 @@ jobs:
         with: 
           name: report.sarif
   
-  zap_scan:
+  dast:
     needs: [sca, sast]
     if: github.ref == 'refs/heads/master' 
 
@@ -131,7 +131,7 @@ jobs:
       - run: echo "Deploy"
 
   deploy-production:
-    needs: [unit-tests, code-review]
+    needs: dast
 
     if: github.ref == 'refs/heads/master' && github.event.pull_request.merged == true
 
