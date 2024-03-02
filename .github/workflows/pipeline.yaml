@@ -7,7 +7,7 @@ on:
   pull_request:
     branches:
       - master
-    types: [created, closed]
+    types: [opened, closed]
 
 jobs:
 
@@ -91,7 +91,7 @@ jobs:
           name: report.sarif
   
   dast:
-    if: github.event.pull_request == true
+    if: github.event_name == 'pull_request'
 
     needs: [sca, sast]
 
