@@ -135,15 +135,19 @@ jobs:
 
     if: github.ref == 'refs/heads/master' && github.event.pull_request.merged == true
 
-    runs-on: ubuntu-20.04
-    concurrency: deploy-to-production
-    environment: production
+    runs-on: self-hosted
+
+    strategy:
+      matrix:
+        node-version: [18.x]
 
     steps:
-      - uses: actions/checkout@v2
-      - name: Use Node.js 18.x
-        uses: actions/setup-node@v2
+      - uses: actions/checkout@v3
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
         with:
-          node-version: 18.x
-      - run: docker build -t setup-nodejs .
-      - run: echo "Deploy"
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+
+      - run: 
+          npm ci
