@@ -6,8 +6,8 @@ const app = express();
 app.use(express.json());
 
 app.get('/', (req, res) => {
-  const helloMessage = printHelloToYou();
-  res.json(helloMessage);
+  let helloMessage = printHelloToYou();
+  res.send(`Hello`);
 });
 
 module.exports = {
