@@ -8,7 +8,7 @@ To use this repository, you need to go to the following branches and run actions
 
 Code review detect
 
-- branch
+> https://github.com/kevi0x6e/nodejs-vulnerable/tree/develop/code-review-detect
 
 Tests detect
 
